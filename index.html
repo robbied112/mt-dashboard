@@ -419,7 +419,7 @@ th.sortable.sort-desc::after { content:' \\25BC'; opacity:0.8; color:var(--accen
     <div class="chart-card"><h3>On Hand CE vs Days on Hand</h3><div class="chart-wrap"><canvas id="chartInvScatter"></canvas></div></div>
   </div>
   <div class="chart-card" style="margin-bottom:20px;"><h3>Inventory by Distributor</h3><div id="invFilterBadge"></div>
-    <div class="tbl-actions"><button class="btn-export" onclick="exportTable('inventory')">&#x1F4E5; Export to Excel</button></div>
+    <div class="tbl-actions"><select id="invSkuFilter" style="padding:6px 10px;border:1px solid #d1d5db;border-radius:6px;font-size:13px;margin-right:8px;" onchange="renderInventoryTable()"><option value="all">All Wines</option><option value="Still Red">Still Red</option><option value="Still White">Still White</option><option value="Still Rose">Still Rose</option><option value="Sparkling White">Sparkling White</option><option value="Sparkling Rose">Sparkling Rose</option></select><button class="btn-export" onclick="exportTable('inventory')">&#x1F4E5; Export to Excel</button></div>
     <div class="table-wrap"><table id="tblInventory"><thead><tr><th class="sortable" data-col="name">Distributor</th><th class="sortable" data-col="st">State</th><th class="sortable" data-col="oh">On Hand (CE)</th><th class="sortable" data-col="rate">Daily Rate</th><th class="sortable" data-col="doh">Days on Hand</th><th class="sortable" data-col="dep90">90D Dep.</th><th class="sortable" data-col="status">Status</th><th class="sortable" data-col="proj">Proj. Order</th></tr></thead><tbody></tbody></table></div></div>
   <div id="inventoryAnalysis"></div>
 </div>
@@ -470,6 +470,7 @@ th.sortable.sort-desc::after { content:' \\25BC'; opacity:0.8; color:var(--accen
   <div class="chart-card">
     <h3 id="reorderHeader">Priority Reorder List</h3>
     <div class="tbl-actions">
+      <select id="reorderSkuFilter" style="padding:6px 10px;border:1px solid #d1d5db;border-radius:6px;font-size:13px;margin-right:8px;" onchange="renderReorder()"><option value="all">All Wines</option><option value="Still Red">Still Red</option><option value="Still White">Still White</option><option value="Still Rose">Still Rose</option><option value="Sparkling White">Sparkling White</option><option value="Sparkling Rose">Sparkling Rose</option></select>
       <button class="btn-toggle" id="btnReorderToggle" onclick="toggleReorderView()">Show All</button>
       <button class="btn-export" onclick="exportTable('reorder')">&#x1F4E5; Export to Excel</button>
       <span id="reorderCount" style="font-size:12px;color:var(--text-dim);margin-left:8px;"></span>
@@ -643,31 +644,31 @@ const distScorecard = [
 ];
 
 const inventoryData = [
-  {name:'Fedway Associates - Kearny, NJ',st:'NJ',oh:332.7,rate:0.9,doh:370,dep90:80.8,status:'Critical',proj:-241.8},
-  {name:'Republic National Dist - Atlanta, GA',st:'GA',oh:330.6,rate:0.19,doh:1706,dep90:17.4,status:'Critical',proj:-330.6},
-  {name:'Republic National Dist - Houston, TX',st:'TX',oh:138.2,rate:0.39,doh:350,dep90:35.5,status:'Overstocked',proj:-138.2},
-  {name:'Republic National Dist - San Antonio, TX',st:'TX',oh:129.6,rate:0.13,doh:974,dep90:12.0,status:'Critical',proj:-129.6},
-  {name:'Republic National Dist - Dallas/ FTW, TX',st:'TX',oh:115.5,rate:0.41,doh:279,dep90:37.2,status:'Overstocked',proj:-115.5},
-  {name:'Breakthru FL - Riverview, FL',st:'FL',oh:74.0,rate:0.64,doh:115,dep90:58.0,status:'Healthy',proj:-55.4},
-  {name:'Breakthru CT / CDI, CT',st:'CT',oh:68.7,rate:0.09,doh:747,dep90:8.3,status:'Critical',proj:-60.3},
-  {name:'Pine State Trading Co, ME',st:'ME',oh:63.0,rate:0.05,doh:1149,dep90:4.9,status:'Critical',proj:-63.0},
-  {name:'Tryon Distributing - Durham, NC',st:'NC',oh:41.8,rate:0.27,doh:153,dep90:24.6,status:'Healthy',proj:1874.5},
-  {name:'Breakthru FL - Miramar, FL',st:'FL',oh:40.2,rate:0.69,doh:58,dep90:62.3,status:'Low',proj:4.2},
-  {name:'Shangy Inc., PA',st:'PA',oh:39.1,rate:0.54,doh:72,dep90:48.6,status:'Low',proj:108.8},
-  {name:'Breakthru SC / Ben Arnold (Sunbelt), SC',st:'SC',oh:32.8,rate:0.05,doh:683,dep90:4.3,status:'Critical',proj:-31.4},
-  {name:'Breakthru NV - Las Vegas (Wine&Spirits), NV',st:'NV',oh:30.6,rate:0.1,doh:307,dep90:9.0,status:'Overstocked',proj:-28.0},
-  {name:'QUAIL DISTRIBUTING - AZ, AZ',st:'AZ',oh:30.5,rate:0.2,doh:154,dep90:17.8,status:'Healthy',proj:-19.1},
-  {name:'Breakthru NV - Reno (Sparks), NV',st:'NV',oh:14.8,rate:0.04,doh:420,dep90:3.2,status:'Critical',proj:-14.8},
-  {name:'Tryon Distributing Co, NC',st:'NC',oh:14.3,rate:0.14,doh:103,dep90:12.4,status:'Healthy',proj:142.2},
-  {name:'Republic National Dist - Corpus Christi, TX',st:'TX',oh:12.7,rate:0.0,doh:1141,dep90:0.0,status:'Critical',proj:0.0},
-  {name:'Republic National Dist - Lubbock, TX',st:'TX',oh:12.7,rate:0.0,doh:1141,dep90:0.0,status:'Critical',proj:0.0},
-  {name:'Republic National Dist - El Paso, TX',st:'TX',oh:9.5,rate:0.0,doh:856,dep90:0.0,status:'Critical',proj:0.0},
+  {name:'Fedway Associates - Kearny, NJ',st:'NJ',oh:332.7,rate:0.9,doh:370,dep90:80.8,status:'Critical',proj:-241.8,skus:[{w:'Still Red',oh:34.9,rate:0.41,doh:84,status:'Low'},{w:'Still White',oh:83.2,rate:0.13,doh:639,status:'Critical'},{w:'Still Rose',oh:92.1,rate:0.14,doh:649,status:'Critical'},{w:'Sparkling White',oh:61.7,rate:0.11,doh:579,status:'Critical'},{w:'Sparkling Rose',oh:60.8,rate:0.11,doh:575,status:'Critical'}]},
+  {name:'Republic National Dist - Atlanta, GA',st:'GA',oh:330.6,rate:0.19,doh:1706,dep90:17.4,status:'Critical',proj:-330.6,skus:[{w:'Still Red',oh:65.0,rate:0.05,doh:1253,status:'Critical'},{w:'Still White',oh:66.7,rate:0.03,doh:2004,status:'Critical'},{w:'Still Rose',oh:67.5,rate:0.02,doh:3001,status:'Critical'},{w:'Sparkling White',oh:64.0,rate:0.06,doh:1055,status:'Critical'},{w:'Sparkling Rose',oh:67.4,rate:0.03,doh:2648,status:'Critical'}]},
+  {name:'Republic National Dist - Houston, TX',st:'TX',oh:138.2,rate:0.39,doh:350,dep90:35.5,status:'Overstocked',proj:-138.2,skus:[{w:'Still Red',oh:32.1,rate:0.08,doh:406,status:'Critical'},{w:'Still White',oh:38.1,rate:0.01,doh:2598,status:'Critical'},{w:'Still Rose',oh:32.4,rate:0.09,doh:356,status:'Overstocked'},{w:'Sparkling White',oh:15.8,rate:0.08,doh:202,status:'Overstocked'},{w:'Sparkling Rose',oh:19.6,rate:0.13,doh:150,status:'Healthy'}]},
+  {name:'Republic National Dist - San Antonio, TX',st:'TX',oh:129.6,rate:0.13,doh:974,dep90:12.0,status:'Critical',proj:-129.6,skus:[{w:'Still Red',oh:34.8,rate:0.01,doh:2735,status:'Critical'},{w:'Still White',oh:32.7,rate:0.01,doh:2568,status:'Critical'},{w:'Still Rose',oh:30.6,rate:0.02,doh:1249,status:'Critical'},{w:'Sparkling White',oh:21.0,rate:0.01,doh:1655,status:'Critical'},{w:'Sparkling Rose',oh:10.6,rate:0.07,doh:150,status:'Healthy'}]},
+  {name:'Republic National Dist - Dallas/ FTW, TX',st:'TX',oh:115.5,rate:0.41,doh:279,dep90:37.2,status:'Overstocked',proj:-115.5,skus:[{w:'Still Red',oh:27.2,rate:0.08,doh:339,status:'Overstocked'},{w:'Still White',oh:30.8,rate:0.06,doh:553,status:'Critical'},{w:'Still Rose',oh:30.2,rate:0.06,doh:506,status:'Critical'},{w:'Sparkling White',oh:14.2,rate:0.09,doh:165,status:'Healthy'},{w:'Sparkling Rose',oh:13.1,rate:0.13,doh:99,status:'Healthy'}]},
+  {name:'Breakthru FL - Riverview, FL',st:'FL',oh:74.0,rate:0.64,doh:115,dep90:58.0,status:'Healthy',proj:-55.4,skus:[{w:'Still Red',oh:0.0,rate:0.19,doh:0,status:'Critical'},{w:'Still White',oh:20.1,rate:0.13,doh:150,status:'Healthy'},{w:'Still Rose',oh:11.6,rate:0.07,doh:170,status:'Healthy'},{w:'Sparkling White',oh:19.0,rate:0.12,doh:165,status:'Healthy'},{w:'Sparkling Rose',oh:23.2,rate:0.14,doh:169,status:'Healthy'}]},
+  {name:'Breakthru CT / CDI, CT',st:'CT',oh:68.7,rate:0.09,doh:747,dep90:8.3,status:'Critical',proj:-60.3,skus:[{w:'Still Red',oh:6.3,rate:0.05,doh:120,status:'Healthy'},{w:'Still White',oh:15.8,rate:0.01,doh:1080,status:'Critical'},{w:'Still Rose',oh:26.4,rate:0.0,doh:2378,status:'Critical'},{w:'Sparkling Rose',oh:20.1,rate:0.02,doh:821,status:'Critical'}]},
+  {name:'Pine State Trading Co, ME',st:'ME',oh:63.0,rate:0.05,doh:1149,dep90:4.9,status:'Critical',proj:-63.0,skus:[{w:'Still Red',oh:13.2,rate:0.02,doh:794,status:'Critical'},{w:'Still White',oh:13.8,rate:0.01,doh:1285,status:'Critical'},{w:'Sparkling White',oh:9.3,rate:0.03,doh:353,status:'Overstocked'},{w:'Sparkling Rose',oh:26.6,rate:0.0,doh:27180,status:'Critical'}]},
+  {name:'Tryon Distributing - Durham, NC',st:'NC',oh:41.8,rate:0.27,doh:153,dep90:24.6,status:'Healthy',proj:1874.5,skus:[{w:'Still Red',oh:10.9,rate:0.05,doh:207,status:'Overstocked'},{w:'Still White',oh:6.3,rate:0.1,doh:64,status:'Low'},{w:'Sparkling White',oh:10.4,rate:0.05,doh:193,status:'Overstocked'},{w:'Sparkling Rose',oh:14.2,rate:0.07,doh:210,status:'Overstocked'}]},
+  {name:'Breakthru FL - Miramar, FL',st:'FL',oh:40.2,rate:0.69,doh:58,dep90:62.3,status:'Low',proj:4.2,skus:[{w:'Still Red',oh:1.1,rate:0.23,doh:5,status:'Low'},{w:'Still White',oh:8.5,rate:0.17,doh:51,status:'Low'},{w:'Still Rose',oh:12.7,rate:0.1,doh:128,status:'Healthy'},{w:'Sparkling White',oh:9.5,rate:0.09,doh:110,status:'Healthy'},{w:'Sparkling Rose',oh:8.5,rate:0.11,doh:77,status:'Low'}]},
+  {name:'Shangy Inc., PA',st:'PA',oh:39.1,rate:0.54,doh:72,dep90:48.6,status:'Low',proj:108.8,skus:[{w:'Still Red',oh:0.0,rate:0.28,doh:0,status:'Critical'},{w:'Still White',oh:6.3,rate:0.11,doh:60,status:'Low'},{w:'Still Rose',oh:9.5,rate:0.01,doh:810,status:'Critical'},{w:'Sparkling White',oh:5.3,rate:0.08,doh:64,status:'Low'},{w:'Sparkling Rose',oh:18.0,rate:0.06,doh:306,status:'Overstocked'}]},
+  {name:'Breakthru SC / Ben Arnold (Sunbelt), SC',st:'SC',oh:32.8,rate:0.05,doh:683,dep90:4.3,status:'Critical',proj:-31.4,skus:[{w:'Still Red',oh:9.5,rate:0.01,doh:1620,status:'Critical'},{w:'Still White',oh:7.4,rate:0.03,doh:291,status:'Overstocked'},{w:'Still Rose',oh:6.3,rate:0.01,doh:432,status:'Critical'},{w:'Sparkling Rose',oh:9.5,rate:0.0,doh:4860,status:'Critical'}]},
+  {name:'Breakthru NV - Las Vegas (Wine&Spirits), NV',st:'NV',oh:30.6,rate:0.1,doh:307,dep90:9.0,status:'Overstocked',proj:-28.0,skus:[{w:'Still Red',oh:7.4,rate:0.08,doh:97,status:'Healthy'},{w:'Still White',oh:8.5,rate:0.01,doh:1440,status:'Critical'},{w:'Sparkling White',oh:6.3,rate:0.02,doh:360,status:'Overstocked'},{w:'Sparkling Rose',oh:8.5,rate:0.0,doh:761,status:'Critical'}]},
+  {name:'QUAIL DISTRIBUTING - AZ, AZ',st:'AZ',oh:30.5,rate:0.2,doh:154,dep90:17.8,status:'Healthy',proj:-19.1,skus:[{w:'Still Red',oh:7.9,rate:0.04,doh:213,status:'Overstocked'},{w:'Still White',oh:5.0,rate:0.05,doh:93,status:'Healthy'},{w:'Still Rose',oh:5.3,rate:0.0,doh:1350,status:'Critical'},{w:'Sparkling White',oh:2.1,rate:0.08,doh:27,status:'Low'},{w:'Sparkling Rose',oh:10.1,rate:0.02,doh:414,status:'Critical'}]},
+  {name:'Breakthru NV - Reno (Sparks), NV',st:'NV',oh:14.8,rate:0.04,doh:420,dep90:3.2,status:'Critical',proj:-14.8,skus:[{w:'Still Red',oh:8.5,rate:0.04,doh:240,status:'Overstocked'},{w:'Still White',oh:2.1,rate:0.0,doh:190,status:'Overstocked'},{w:'Sparkling White',oh:2.1,rate:0.0,doh:190,status:'Overstocked'},{w:'Sparkling Rose',oh:2.1,rate:0.0,doh:190,status:'Overstocked'}]},
+  {name:'Tryon Distributing Co, NC',st:'NC',oh:14.3,rate:0.14,doh:103,dep90:12.4,status:'Healthy',proj:142.2,skus:[{w:'Still Red',oh:3.9,rate:0.02,doh:198,status:'Overstocked'},{w:'Still White',oh:5.1,rate:0.05,doh:100,status:'Healthy'},{w:'Sparkling Rose',oh:5.3,rate:0.07,doh:78,status:'Low'}]},
+  {name:'Republic National Dist - Corpus Christi, TX',st:'TX',oh:12.7,rate:0.0,doh:1141,dep90:0.0,status:'Critical',proj:0.0,skus:[{w:'Still Red',oh:3.2,rate:0.0,doh:285,status:'Overstocked'},{w:'Still White',oh:3.2,rate:0.0,doh:285,status:'Overstocked'},{w:'Still Rose',oh:3.2,rate:0.0,doh:285,status:'Overstocked'},{w:'Sparkling White',oh:1.1,rate:0.0,doh:95,status:'Healthy'},{w:'Sparkling Rose',oh:2.1,rate:0.0,doh:190,status:'Overstocked'}]},
+  {name:'Republic National Dist - Lubbock, TX',st:'TX',oh:12.7,rate:0.0,doh:1141,dep90:0.0,status:'Critical',proj:0.0,skus:[{w:'Still Red',oh:3.2,rate:0.0,doh:285,status:'Overstocked'},{w:'Still White',oh:3.2,rate:0.0,doh:285,status:'Overstocked'},{w:'Still Rose',oh:3.2,rate:0.0,doh:285,status:'Overstocked'},{w:'Sparkling White',oh:1.1,rate:0.0,doh:95,status:'Healthy'},{w:'Sparkling Rose',oh:2.1,rate:0.0,doh:190,status:'Overstocked'}]},
+  {name:'Republic National Dist - El Paso, TX',st:'TX',oh:9.5,rate:0.0,doh:856,dep90:0.0,status:'Critical',proj:0.0,skus:[{w:'Still Red',oh:2.1,rate:0.0,doh:190,status:'Overstocked'},{w:'Still White',oh:3.2,rate:0.0,doh:285,status:'Overstocked'},{w:'Still Rose',oh:2.1,rate:0.0,doh:190,status:'Overstocked'},{w:'Sparkling Rose',oh:2.1,rate:0.0,doh:190,status:'Overstocked'}]},
 ];
 
 const placementData = [
   {name:'Breakthru FL - River',st:'FL',newA:13,lostA:52,net:-39},
-  {name:'Republic National Di',st:'TX',newA:2,lostA:37,net:-35},
   {name:'Tryon Distributing -',st:'NC',newA:0,lostA:35,net:-35},
+  {name:'Republic National Di',st:'TX',newA:2,lostA:37,net:-35},
   {name:'Republic National Di',st:'TX',newA:0,lostA:32,net:-32},
   {name:'Fedway NJ',st:'NJ',newA:11,lostA:25,net:-14},
   {name:'Breakthru FL - Miram',st:'FL',newA:21,lostA:34,net:-13},
@@ -677,9 +678,9 @@ const placementData = [
   {name:'Breakthru NV - Las V',st:'NV',newA:1,lostA:8,net:-7},
   {name:'Tryon Co NC',st:'NC',newA:3,lostA:9,net:-6},
   {name:'Breakthru NV - Reno ',st:'NV',newA:0,lostA:3,net:-3},
-  {name:'Republic National Di',st:'GA',newA:23,lostA:25,net:-2},
   {name:'QUAIL DISTRIBUTING -',st:'AZ',newA:7,lostA:9,net:-2},
   {name:'Breakthru CT / CDI, ',st:'CT',newA:2,lostA:4,net:-2},
+  {name:'Republic National Di',st:'GA',newA:23,lostA:25,net:-2},
   {name:'Breakthru SC / Ben A',st:'SC',newA:9,lostA:5,net:4},
 ];
 
@@ -1907,9 +1908,38 @@ function renderInventoryTable() {
   const tbl = document.querySelector('#tblInventory tbody');
   tbl.innerHTML = '';
   if(!filtered.length) { tbl.innerHTML='<tr><td colspan="8" class="empty-state">'+(chartFilters.inventory?'No '+chartFilters.inventory.value.toLowerCase()+' distributors':'No inventory in this market')+'</td></tr>'; return; }
-  filtered.forEach(d => {
-    tbl.innerHTML += `<tr><td style="font-weight:600">${d.name}</td><td><span class="badge badge-blue">${d.st}</span></td><td>${d.oh.toFixed(1)}</td><td>${d.rate.toFixed(2)}</td><td>${Math.round(d.doh)}</td><td>${d.dep90.toFixed(1)}</td><td>${statusBadge(d.status)}</td><td>${d.proj<0?'<span style="color:var(--red)">'+d.proj.toFixed(1)+'</span>':d.proj.toFixed(1)}</td></tr>`;
+  const skuFilter = document.getElementById('invSkuFilter') ? document.getElementById('invSkuFilter').value : 'all';
+  let html = '';
+  filtered.forEach((d, idx) => {
+    if (skuFilter !== 'all') {
+      const sku = (d.skus || []).find(s => s.w === skuFilter);
+      if (!sku) return;
+      html += `<tr><td style="font-weight:600">${d.name}</td><td><span class="badge badge-blue">${d.st}</span></td><td>${sku.oh.toFixed(1)}</td><td>${sku.rate.toFixed(2)}</td><td>${Math.round(sku.doh)}</td><td>-</td><td>${statusBadge(sku.status)}</td><td>-</td></tr>`;
+    } else {
+      const hasSkus = d.skus && d.skus.length > 0;
+      const expId = 'inv-sku-' + idx;
+      const expIcon = hasSkus ? `<span class="sku-toggle" onclick="toggleSkuRow('${expId}')" style="cursor:pointer;color:#3498db;font-size:12px;margin-right:4px;" title="Show wine breakdown">&#9654;</span>` : '';
+      html += `<tr><td style="font-weight:600">${expIcon}${d.name}</td><td><span class="badge badge-blue">${d.st}</span></td><td>${d.oh.toFixed(1)}</td><td>${d.rate.toFixed(2)}</td><td>${Math.round(d.doh)}</td><td>${d.dep90.toFixed(1)}</td><td>${statusBadge(d.status)}</td><td>${d.proj<0?'<span style="color:var(--red)">'+d.proj.toFixed(1)+'</span>':d.proj.toFixed(1)}</td></tr>`;
+      if (hasSkus) {
+        html += `<tr id="${expId}" style="display:none;"><td colspan="8" style="padding:0;">
+          <table style="width:100%;background:#f8f9fa;border:none;margin:0;">
+            <thead style="font-size:11px;color:#7f8c8d;"><tr>
+              <th style="padding:6px 10px;border:none;">Wine</th><th style="padding:6px 10px;border:none;"></th>
+              <th style="padding:6px 10px;border:none;">On Hand</th><th style="padding:6px 10px;border:none;">Daily Rate</th>
+              <th style="padding:6px 10px;border:none;">DOH</th><th style="padding:6px 10px;border:none;"></th>
+              <th style="padding:6px 10px;border:none;">Status</th><th style="padding:6px 10px;border:none;"></th>
+            </tr></thead><tbody>
+            ${d.skus.map(s => `<tr style="font-size:12px;">
+              <td style="padding:4px 10px;border:none;font-weight:500;">${s.w}</td><td style="padding:4px 10px;border:none;"></td>
+              <td style="padding:4px 10px;border:none;">${s.oh.toFixed(1)}</td><td style="padding:4px 10px;border:none;">${s.rate.toFixed(2)}</td>
+              <td style="padding:4px 10px;border:none;">${Math.round(s.doh)}</td><td style="padding:4px 10px;border:none;"></td>
+              <td style="padding:4px 10px;border:none;">${statusBadge(s.status)}</td><td style="padding:4px 10px;border:none;"></td>
+            </tr>`).join('')}
+          </tbody></table></td></tr>`;
+      }
+    }
   });
+  tbl.innerHTML = html;
 }
 
 // ==================== ACCOUNTS ====================
@@ -2088,28 +2118,43 @@ function renderReorder() {
     fr = sortData([...fr], currentSort.col, currentSort.dir);
   }
 
-  const display = showAllReorder ? fr : fr.slice(0, REORDER_LIMIT);
+  const skuFilter = document.getElementById('reorderSkuFilter') ? document.getElementById('reorderSkuFilter').value : 'all';
+  let skuFiltered = fr;
+  if (skuFilter !== 'all') {
+    skuFiltered = fr.filter(d => d.skus && d.skus.some(s => s.w === skuFilter));
+  }
+  const display = showAllReorder ? skuFiltered : skuFiltered.slice(0, REORDER_LIMIT);
   const rchSuffix = currentChannel!=='all' ? (currentChannel==='ON' ? ' - On-Premise' : ' - Off-Premise') : '';
-  document.getElementById('reorderHeader').textContent = (showAllReorder ? 'All '+fr.length : 'Top '+Math.min(REORDER_LIMIT,fr.length)) + ' Priority Reorder' + (currentState!=='all' ? ' in '+stateNames[currentState] : '') + rchSuffix;
-  document.getElementById('reorderCount').textContent = showAllReorder ? 'Showing all '+fr.length : 'Showing '+display.length+' of '+fr.length;
+  document.getElementById('reorderHeader').textContent = (showAllReorder ? 'All '+skuFiltered.length : 'Top '+Math.min(REORDER_LIMIT,skuFiltered.length)) + ' Priority Reorder' + (currentState!=='all' ? ' in '+stateNames[currentState] : '') + rchSuffix;
+  document.getElementById('reorderCount').textContent = showAllReorder ? 'Showing all '+skuFiltered.length : 'Showing '+display.length+' of '+skuFiltered.length;
   const tbl = document.querySelector('#tblReorder tbody');
   tbl.innerHTML = '';
   if(!display.length) { tbl.innerHTML='<tr><td colspan="11" class="empty-state">No accounts in this market</td></tr>'; return; }
+  let html = '';
   display.forEach((d,i) => {
-    const statusBdg = d.days > d.cycle ? '<span class="badge badge-red">Overdue</span>' : d.days >= d.cycle-7 ? '<span class="badge badge-yellow">Due</span>' : '<span class="badge badge-green">On Track</span>';
-    const rchBadge = d.ch==='ON' ? '<span class="badge" style="background:#E0F2FE;color:#0369A1;">On</span>' : '<span class="badge" style="background:#FEF3C7;color:#92400E;">Off</span>';
-    const hasSkus = d.skus && d.skus.length > 0;
-    const expandId = 'sku-exp-' + i;
-    const expandIcon = hasSkus ? `<span class="sku-toggle" onclick="toggleSkuRow('${expandId}')" style="cursor:pointer;color:#2563EB;font-size:12px;margin-right:4px;" title="Show SKU breakdown">&#9654;</span>` : '';
-    tbl.innerHTML += `<tr><td>${i+1}</td><td style="font-weight:600">${expandIcon}${d.acct}</td><td>${d.dist}</td><td><span class="badge badge-blue">${d.st}</span></td><td>${rchBadge}</td><td>${d.ce.toFixed(1)}</td><td>${d.purch.toFixed(1)}</td><td>${Math.round(d.cycle)}d</td><td>${d.last}</td><td style="color:${d.days>d.cycle?'var(--red)':'var(--text)'};font-weight:600">${Math.round(d.days)}</td><td>${statusBdg}</td></tr>`;
-    if (hasSkus) {
-      let skuHtml = d.skus.map(s => {
-        const ss = s.days > s.cycle && s.cycle > 0 ? '<span class="badge badge-red">Overdue</span>' : s.days >= s.cycle-7 && s.cycle > 0 ? '<span class="badge badge-yellow">Due</span>' : '<span class="badge badge-green">On Track</span>';
-        return `<tr style="font-size:12px;"><td style="padding:4px 10px;border:none;"></td><td style="padding:4px 10px;border:none;font-weight:500;">${s.w}</td><td style="padding:4px 10px;border:none;"></td><td style="padding:4px 10px;border:none;"></td><td style="padding:4px 10px;border:none;"></td><td style="padding:4px 10px;border:none;">${s.ce.toFixed(1)}</td><td style="padding:4px 10px;border:none;">${s.purch}</td><td style="padding:4px 10px;border:none;">${s.cycle}d</td><td style="padding:4px 10px;border:none;">${s.last}</td><td style="padding:4px 10px;border:none;">${s.days}</td><td style="padding:4px 10px;border:none;">${ss}</td></tr>`;
-      }).join('');
-      tbl.innerHTML += `<tr id="${expandId}" style="display:none;"><td colspan="11" style="padding:0;"><table style="width:100%;background:#f8f9fa;border:none;margin:0;"><thead style="font-size:11px;color:#7f8c8d;"><tr><th style="padding:6px 10px;border:none;"></th><th style="padding:6px 10px;border:none;">Wine</th><th style="padding:6px 10px;border:none;"></th><th style="padding:6px 10px;border:none;"></th><th style="padding:6px 10px;border:none;"></th><th style="padding:6px 10px;border:none;">CE</th><th style="padding:6px 10px;border:none;">Orders</th><th style="padding:6px 10px;border:none;">Cycle</th><th style="padding:6px 10px;border:none;">Last Order</th><th style="padding:6px 10px;border:none;">Days</th><th style="padding:6px 10px;border:none;">Status</th></tr></thead><tbody>${skuHtml}</tbody></table></td></tr>`;
+    if (skuFilter !== 'all') {
+      const sku = d.skus.find(s => s.w === skuFilter);
+      if (!sku) return;
+      const ss = sku.days > sku.cycle && sku.cycle > 0 ? '<span class="badge badge-red">Overdue</span>' : sku.days >= sku.cycle-7 && sku.cycle > 0 ? '<span class="badge badge-yellow">Due</span>' : '<span class="badge badge-green">On Track</span>';
+      const rchBadge = d.ch==='ON' ? '<span class="badge" style="background:#E0F2FE;color:#0369A1;">On</span>' : '<span class="badge" style="background:#FEF3C7;color:#92400E;">Off</span>';
+      html += `<tr><td>${i+1}</td><td style="font-weight:600">${d.acct}</td><td>${d.dist}</td><td><span class="badge badge-blue">${d.st}</span></td><td>${rchBadge}</td><td>${sku.ce.toFixed(1)}</td><td>${sku.purch}</td><td>${sku.cycle}d</td><td>${sku.last}</td><td style="color:${sku.days>sku.cycle?'var(--red)':'var(--text)'};font-weight:600">${sku.days}</td><td>${ss}</td></tr>`;
+    } else {
+      const statusBdg = d.days > d.cycle ? '<span class="badge badge-red">Overdue</span>' : d.days >= d.cycle-7 ? '<span class="badge badge-yellow">Due</span>' : '<span class="badge badge-green">On Track</span>';
+      const rchBadge = d.ch==='ON' ? '<span class="badge" style="background:#E0F2FE;color:#0369A1;">On</span>' : '<span class="badge" style="background:#FEF3C7;color:#92400E;">Off</span>';
+      const hasSkus = d.skus && d.skus.length > 0;
+      const expandId = 'sku-exp-' + i;
+      const expandIcon = hasSkus ? `<span class="sku-toggle" onclick="toggleSkuRow('${expandId}')" style="cursor:pointer;color:#2563EB;font-size:12px;margin-right:4px;" title="Show SKU breakdown">&#9654;</span>` : '';
+      html += `<tr><td>${i+1}</td><td style="font-weight:600">${expandIcon}${d.acct}</td><td>${d.dist}</td><td><span class="badge badge-blue">${d.st}</span></td><td>${rchBadge}</td><td>${d.ce.toFixed(1)}</td><td>${d.purch.toFixed(1)}</td><td>${Math.round(d.cycle)}d</td><td>${d.last}</td><td style="color:${d.days>d.cycle?'var(--red)':'var(--text)'};font-weight:600">${Math.round(d.days)}</td><td>${statusBdg}</td></tr>`;
+      if (hasSkus) {
+        let skuHtml = d.skus.map(s => {
+          const ss = s.days > s.cycle && s.cycle > 0 ? '<span class="badge badge-red">Overdue</span>' : s.days >= s.cycle-7 && s.cycle > 0 ? '<span class="badge badge-yellow">Due</span>' : '<span class="badge badge-green">On Track</span>';
+          return `<tr style="font-size:12px;"><td style="padding:4px 10px;border:none;"></td><td style="padding:4px 10px;border:none;font-weight:500;">${s.w}</td><td style="padding:4px 10px;border:none;"></td><td style="padding:4px 10px;border:none;"></td><td style="padding:4px 10px;border:none;"></td><td style="padding:4px 10px;border:none;">${s.ce.toFixed(1)}</td><td style="padding:4px 10px;border:none;">${s.purch}</td><td style="padding:4px 10px;border:none;">${s.cycle}d</td><td style="padding:4px 10px;border:none;">${s.last}</td><td style="padding:4px 10px;border:none;">${s.days}</td><td style="padding:4px 10px;border:none;">${ss}</td></tr>`;
+        }).join('');
+        html += `<tr id="${expandId}" style="display:none;"><td colspan="11" style="padding:0;"><table style="width:100%;background:#f8f9fa;border:none;margin:0;"><thead style="font-size:11px;color:#7f8c8d;"><tr><th style="padding:6px 10px;border:none;"></th><th style="padding:6px 10px;border:none;">Wine</th><th style="padding:6px 10px;border:none;"></th><th style="padding:6px 10px;border:none;"></th><th style="padding:6px 10px;border:none;"></th><th style="padding:6px 10px;border:none;">CE</th><th style="padding:6px 10px;border:none;">Orders</th><th style="padding:6px 10px;border:none;">Cycle</th><th style="padding:6px 10px;border:none;">Last Order</th><th style="padding:6px 10px;border:none;">Days</th><th style="padding:6px 10px;border:none;">Status</th></tr></thead><tbody>${skuHtml}</tbody></table></td></tr>`;
+      }
     }
   });
+  tbl.innerHTML = html;
 }
 
 function toggleSkuRow(id) {
