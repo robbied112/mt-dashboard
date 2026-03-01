@@ -673,9 +673,9 @@ const placementData = [
   {name:'Fedway NJ',st:'NJ',newA:2,lostA:14,net:-12},
   {name:'Tryon Distributing -',st:'NC',newA:7,lostA:17,net:-10},
   {name:'Shangy PA',st:'PA',newA:6,lostA:10,net:-4},
-  {name:'Tryon Co NC',st:'NC',newA:3,lostA:4,net:-1},
-  {name:'Breakthru NV - Reno ',st:'NV',newA:0,lostA:1,net:-1},
   {name:'Breakthru NV - Las V',st:'NV',newA:0,lostA:1,net:-1},
+  {name:'Breakthru NV - Reno ',st:'NV',newA:0,lostA:1,net:-1},
+  {name:'Tryon Co NC',st:'NC',newA:3,lostA:4,net:-1},
   {name:'Breakthru SC / Ben A',st:'SC',newA:9,lostA:4,net:5},
   {name:'Republic National Di',st:'GA',newA:10,lostA:2,net:8},
 ];
@@ -1277,8 +1277,8 @@ const customerRevenue = [
   {type:'Distributors',rev:751416.33},
   {type:'Direct to Trade - Off Premise',rev:150312.72},
   {type:'Website / DTC (FBM)',rev:140543.34},
-  {type:'Direct to Trade - On Premise',rev:75688.41},
-  {type:'Uncategorized',rev:6145.33},
+  {type:'Direct to Trade - On Premise',rev:75916.41},
+  {type:'Uncategorized',rev:5917.33},
   {type:'Promo',rev:-0.5},
 ];
 
@@ -1304,11 +1304,11 @@ const revTxns = 6053;
 const ytdMonths = ['2026-01','2026-02'];
 const ytdMonthLabels = ['Jan','Feb'];
 const ytdChannelRev = {
-  'Distributors': [43927.0,18860.0],
+  'Distributors': [43927.0,26848.5],
   'Website / DTC': [15111.03,4633.32],
-  'Direct to Trade - Off Premise': [15456.09,12316.6],
-  'Direct to Trade - On Premise': [5024.46,2488.32],
-  'Other': [0,227.0],
+  'Direct to Trade - Off Premise': [15456.09,53809.49],
+  'Direct to Trade - On Premise': [5024.46,3136.32],
+  'Other': [0,-1.8],
 };
 const ytdBudget = {
   'Distributors': [150000.0,150000.0],
@@ -1321,21 +1321,16 @@ const ytdBudgetTotal = 2850000;
 
 // ==================== QB DISTRIBUTOR ORDERS ====================
 const qbDistOrders = {
-  'Breakthru CT / CDI, CT':{date:'12/09/24',num:'100099',total:17590,items:'Red x28, Rose x28, Spark Rose x33, White x28',orders:1,label:'Classic',classicCases:117,contemporaryCases:0},
-  'Breakthru FL - Miramar, FL':{date:'01/15/26',num:'100691',total:2289,items:'Red x182',orders:10,label:'Both',classicCases:288,contemporaryCases:47},
-  'Breakthru FL - Riverview, FL':{date:'12/26/25',num:'100651',total:4088,items:'Spark White x11, Spark Rose x14',orders:11,label:'Both',classicCases:356,contemporaryCases:28},
-  'Breakthru NV - Las Vegas (Wine&Spirits), NV':{date:'12/31/25',num:'100676',total:1144,items:'Red x91',orders:4,label:'Both',classicCases:44,contemporaryCases:14},
-  'Breakthru NV - Reno (Sparks), NV':{date:'12/31/25',num:'100676',total:1144,items:'Red x91',orders:4,label:'Both',classicCases:44,contemporaryCases:14},
-  'Breakthru SC / Ben Arnold (Sunbelt), SC':{date:'11/24/25',num:'100603',total:2696,items:'Spark Rose x117, White x117',orders:2,label:'Both',classicCases:56,contemporaryCases:18},
-  'Fedway Associates - Kearny, NJ':{date:'03/26/25',num:'100189',total:77552,items:'Red x112, Spark Rose x88, Spark White x88, Rose x112, White x112',orders:1,label:'Classic',classicCases:512,contemporaryCases:0},
-  'QUAIL DISTRIBUTING - AZ, AZ':{date:'02/10/26',num:'100740',total:1552,items:'White x3, Spark White x7',orders:5,label:'Both',classicCases:65,contemporaryCases:11},
-  'Republic National Dist - Atlanta, GA':{date:'07/29/25',num:'100336',total:50325,items:'Red x858, Rose x858, White x858, Spark Rose x858, Spark White x858',orders:1,label:'Contemporary',classicCases:0,contemporaryCases:1122},
-  'Republic National Dist - Dallas/ FTW, TX':{date:'01/15/26',num:'100688',total:6317,items:'Spark White x143, Red x143, Rose x130, White x130',orders:9,label:'Contemporary',classicCases:0,contemporaryCases:895},
-  'Republic National Dist - Houston, TX':{date:'01/15/26',num:'100688',total:6317,items:'Spark White x143, Red x143, Rose x130, White x130',orders:9,label:'Contemporary',classicCases:0,contemporaryCases:895},
-  'Republic National Dist - San Antonio, TX':{date:'01/15/26',num:'100688',total:6317,items:'Spark White x143, Red x143, Rose x130, White x130',orders:9,label:'Contemporary',classicCases:0,contemporaryCases:895},
-  'Shangy Inc., PA':{date:'02/19/26',num:'100748',total:7625,items:'Red x20, White x20, Spark White x10',orders:5,label:'Classic',classicCases:270,contemporaryCases:0},
-  'Tryon Distributing - Durham, NC':{date:'02/19/26',num:'100749',total:2488,items:'Red x91, White x7',orders:6,label:'Both',classicCases:152,contemporaryCases:21},
-  'Tryon Distributing Co, NC':{date:'02/19/26',num:'100749',total:2488,items:'Red x91, White x7',orders:6,label:'Both',classicCases:152,contemporaryCases:21},
+  'Breakthru FL - Miramar, FL':{date:'01/15/26',num:'100691',total:2289,items:'Red x182',orders:1,label:'Contemporary',classicCases:0,contemporaryCases:14},
+  'Breakthru FL - Riverview, FL':{date:'02/24/26',num:'100754',total:8596,items:'Spark White x56',orders:1,label:'Classic',classicCases:56,contemporaryCases:0},
+  'QUAIL DISTRIBUTING - AZ, AZ':{date:'02/10/26',num:'100740',total:1552,items:'White x3, Spark White x7',orders:1,label:'Classic',classicCases:10,contemporaryCases:0},
+  'Republic National Dist - Atlanta, GA':{date:'01/15/26',num:'100688',total:6317,items:'Spark White x143, Red x143, Rose x130, White x130',orders:3,label:'Contemporary',classicCases:0,contemporaryCases:126},
+  'Republic National Dist - Dallas/ FTW, TX':{date:'01/15/26',num:'100688',total:6317,items:'Spark White x143, Red x143, Rose x130, White x130',orders:3,label:'Contemporary',classicCases:0,contemporaryCases:126},
+  'Republic National Dist - Houston, TX':{date:'01/15/26',num:'100688',total:6317,items:'Spark White x143, Red x143, Rose x130, White x130',orders:3,label:'Contemporary',classicCases:0,contemporaryCases:126},
+  'Republic National Dist - San Antonio, TX':{date:'01/15/26',num:'100688',total:6317,items:'Spark White x143, Red x143, Rose x130, White x130',orders:3,label:'Contemporary',classicCases:0,contemporaryCases:126},
+  'Shangy Inc., PA':{date:'02/27/26',num:'100748',total:6265,items:'Red x20, White x10, Spark White x10',orders:1,label:'Classic',classicCases:40,contemporaryCases:0},
+  'Tryon Distributing - Durham, NC':{date:'02/19/26',num:'100749',total:3241,items:'Red x91, White x7, Spark Rose x7',orders:2,label:'Both',classicCases:35,contemporaryCases:14},
+  'Tryon Distributing Co, NC':{date:'02/19/26',num:'100749',total:3241,items:'Red x91, White x7, Spark Rose x7',orders:2,label:'Both',classicCases:35,contemporaryCases:14},
 };
 
 // ==================== WAREHOUSE INVENTORY ====================
