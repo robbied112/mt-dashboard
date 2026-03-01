@@ -347,18 +347,13 @@ th.sortable.sort-desc::after { content:' \\25BC'; opacity:0.8; color:var(--accen
 <div id="overview" class="section active">
   <div id="overviewSnapshot" class="snapshot-bar"></div>
   <div id="overviewKPIs" class="grid-4" style="margin-top:4px;"></div>
-  <div id="overviewKPIs2" class="grid-4"></div>
   <div id="noPriceNote" class="no-price-note" style="display:none;"></div>
-  <div id="overviewAlerts"></div>
+  <div id="classicSelloutTracker" class="chart-card" style="margin-bottom:20px;"></div>
   <div class="grid-2">
     <div class="chart-card"><h3>Weekly Depletion Trend (13W)</h3><div class="chart-wrap"><canvas id="chartDepTrend"></canvas></div></div>
-    <div class="chart-card"><h3>Monthly Revenue Trend</h3><div class="chart-wrap"><canvas id="chartRevTrend"></canvas></div></div>
-  </div>
-  <div class="grid-2">
-    <div class="chart-card"><h3>Revenue by Channel</h3><div class="chart-wrap"><canvas id="chartChannel"></canvas></div></div>
     <div class="chart-card"><h3>Top Distributors by 13W CE</h3><div class="chart-wrap"><canvas id="chartDistBar"></canvas></div></div>
   </div>
-  <div id="overviewAnalysis"></div>
+  <div id="overviewAlerts" style="margin-top:12px;"></div>
 </div>
 
 <!-- REVENUE -->
@@ -375,16 +370,13 @@ th.sortable.sort-desc::after { content:' \\25BC'; opacity:0.8; color:var(--accen
     <div class="chart-card"><h3>Revenue Mix by Channel (2026 YTD)</h3><div class="chart-wrap" style="height:340px;"><canvas id="chartCustChannel"></canvas></div></div>
   </div>
   <div class="grid-2">
-    <div class="chart-card"><h3>Monthly Revenue Trend (All Time)</h3><div class="chart-wrap" style="height:320px;"><canvas id="chartRevMonthly"></canvas></div></div>
-    <div class="chart-card"><h3>Monthly Revenue by SKU</h3><div class="chart-wrap" style="height:320px;"><canvas id="chartSkuTrend"></canvas></div></div>
+    <div class="chart-card"><h3>2026 Monthly Revenue by SKU</h3><div class="chart-wrap" style="height:320px;"><canvas id="chartSkuTrend"></canvas></div></div>
+    <div class="chart-card"><h3>2026 Revenue by SKU (5 Wines)</h3><div class="chart-wrap" style="height:320px;"><canvas id="chartProductMix"></canvas></div></div>
   </div>
-  <div class="grid-2">
-    <div class="chart-card"><h3>Revenue by SKU (5 Wines)</h3><div class="chart-wrap" style="height:320px;"><canvas id="chartProductMix"></canvas></div></div>
-    <div class="chart-card">
-      <h3>SKU Detail</h3>
-      <div class="tbl-actions"><button class="btn-export" onclick="exportTable('skuDetail')">&#x1F4E5; Export to Excel</button></div>
-      <div class="table-wrap"><table id="tblSkuDetail"><thead><tr><th>SKU</th><th>Total Revenue</th><th>Bottles Sold</th><th>Cases (CE)</th><th>Avg Rev/Case</th><th>% of Total</th></tr></thead><tbody></tbody></table></div>
-    </div>
+  <div class="chart-card" style="margin-bottom:20px;">
+    <h3>2026 SKU Detail</h3>
+    <div class="tbl-actions"><button class="btn-export" onclick="exportTable('skuDetail')">&#x1F4E5; Export to Excel</button></div>
+    <div class="table-wrap"><table id="tblSkuDetail"><thead><tr><th>SKU</th><th>2026 Revenue</th><th>Bottles Sold</th><th>Cases (CE)</th><th>Avg Rev/Case</th><th>% of Total</th></tr></thead><tbody></tbody></table></div>
   </div>
   <div id="revenueAnalysis"></div>
 </div>
@@ -673,9 +665,9 @@ const placementData = [
   {name:'Fedway NJ',st:'NJ',newA:2,lostA:14,net:-12},
   {name:'Tryon Distributing -',st:'NC',newA:7,lostA:17,net:-10},
   {name:'Shangy PA',st:'PA',newA:6,lostA:10,net:-4},
-  {name:'Breakthru NV - Las V',st:'NV',newA:0,lostA:1,net:-1},
   {name:'Breakthru NV - Reno ',st:'NV',newA:0,lostA:1,net:-1},
   {name:'Tryon Co NC',st:'NC',newA:3,lostA:4,net:-1},
+  {name:'Breakthru NV - Las V',st:'NV',newA:0,lostA:1,net:-1},
   {name:'Breakthru SC / Ben A',st:'SC',newA:9,lostA:4,net:5},
   {name:'Republic National Di',st:'GA',newA:10,lostA:2,net:8},
 ];
@@ -1300,6 +1292,27 @@ const revTotal = 1124105.63;
 const revUnits = 60647;
 const revTxns = 6053;
 
+// ==================== 2026-ONLY REVENUE DATA ====================
+const productMix2026 = [
+  {name:'Still Red',rev:37119.21,units:2531,avgCase:163.5},
+  {name:'Still White',rev:19136.5,units:1194,avgCase:145.94},
+  {name:'Still Rose',rev:14119.44,units:855,avgCase:152.2},
+  {name:'Sparkling White',rev:28217.02,units:1067,avgCase:158.84},
+  {name:'Sparkling Rose',rev:14964.86,units:637,avgCase:179.08},
+];
+const revTotal2026 = 167944.41;
+const revUnits2026 = 7925;
+const revTxns2026 = 981;
+const revMonths2026 = ['2026-01','2026-02'];
+const revMonthLabels2026 = ['Jan 26','Feb'];
+const revTrend2026 = {
+  'Still Red': [19044.93,18074.28],
+  'Still White': [12802.88,6333.62],
+  'Still Rose': [10363.13,3756.31],
+  'Sparkling White': [15022.3,13194.72],
+  'Sparkling Rose': [12176.87,2787.99],
+};
+
 // ==================== 2026 YTD REVENUE BY CHANNEL ====================
 const ytdMonths = ['2026-01','2026-02'];
 const ytdMonthLabels = ['Jan','Feb'];
@@ -1351,6 +1364,39 @@ const warehouseInventory = {
   },
   grandTotal:{sw:2880,sr:1032,rd:1274,spw:1994,spr:3259,total:10437},
   batch4Est:{sw:3882,sr:2000,rd:5425,spw:0,spr:0,total:11307},
+};
+
+// ==================== CLASSIC INVENTORY SELLOUT TRACKER ====================
+const classicTracker = {
+  trackable: 3270.2,
+  totalWithBad: 3897.25,
+  badSpr: 627.0,
+  burnRate: 107.6,
+  monthsRemaining: 3.9,
+  requiredMonthly: 829.6,
+  dataDate: '2.9.26',
+  byWine: {sw:1639.8,sr:231.0,rd:37.6,spw:588.1,spr:773.8},
+  locations: {
+    'K+D Liquor, NY':{sw:0.8,sr:45.0,rd:1.6,spw:28.1,spr:16.8,total:92.2},
+    'Zephyr Express, CA Batch 1':{sw:0.0,sr:44.0,rd:0.0,spw:0,spr:627.0,total:671.0},
+    'Zephyr Express, CA Batch 2':{sw:1639.0,sr:0,rd:0,spw:538.0,spr:575.0,total:2752.0},
+    'SDX Long Island':{sw:0.0,sr:142.0,rd:36.0,spw:22.0,spr:182.0,total:382.0},
+  },
+  history: [
+    {date:'5.7.25',total:5647.3},
+    {date:'5.16.25',total:5353.3},
+    {date:'5.28.25',total:5240.3},
+    {date:'6.2.25',total:4787.3},
+    {date:'6.30.25',total:4735.9},
+    {date:'8.4.25',total:4857.3},
+    {date:'9.8.25',total:4585.3},
+    {date:'10.6.25',total:4636.4},
+    {date:'11.4.25',total:4261.9},
+    {date:'12.23.25',total:4112.4},
+    {date:'1.9.26',total:4108.2},
+    {date:'2.9.26',total:3897.2},
+  ],
+  newLabelTotal: 5377.3,
 };
 
 // ==================== BUILD METADATA ====================
@@ -1638,79 +1684,104 @@ function renderAll() {
 function renderOverview() {
   const fd = filterByState(distScorecard);
   const totalCE = fd.reduce((s,d)=>s+d.ce,0);
-  const totalRev = fd.reduce((s,d)=>s+d.rev,0);
   const priorCE = fd.reduce((s,d)=>s+d.prior,0);
   const w4Total = fd.reduce((s,d)=>s+d.w4,0);
-  const w9Total = totalCE - w4Total; // rough 9W estimate
-  const w4Momentum = w9Total>0 ? (((w4Total/(w4Total+w9Total))*13/4 - 1)*100) : 0; // normalized rate vs avg
   const ohTotal = fd.reduce((s,d)=>s+d.oh,0);
-  const newPl = fd.reduce((s,d)=>s+(d.net>0?d.net:0),0);
-  const lostPl = fd.reduce((s,d)=>s+(d.net<0?d.net:0),0);
   const netPl = fd.reduce((s,d)=>s+d.net,0);
   const distCount = fd.filter(d=>d.ce>0).length;
   const fi = filterByState(inventoryData);
   const critCount = fi.filter(d=>d.status==='Critical').length;
-  const lowCount = fi.filter(d=>d.status==='Low').length;
   const avgDoh = fi.length ? Math.round(fi.reduce((s,d)=>s+d.doh,0)/fi.length) : 0;
   const fp = filterByState(placementData);
-  const fa = filterByState(accountsTop);
-  const accel = fa.filter(d=>d.trend==='Accelerating').length;
-  const decel = fa.filter(d=>d.trend==='Decelerating').length;
-
-  // Delta helpers
   const yoyPct = priorCE>0 ? (((totalCE-priorCE)/priorCE)*100) : 0;
   const yoyBadge = yoyPct>=0 ? `<span class="kpi-delta up">+${yoyPct.toFixed(1)}% YoY</span>` : `<span class="kpi-delta down">${yoyPct.toFixed(1)}% YoY</span>`;
-  const velBadge = w4Momentum>=5 ? `<span class="kpi-delta up">&#9650; accelerating</span>` : w4Momentum<=-5 ? `<span class="kpi-delta down">&#9660; decelerating</span>` : `<span class="kpi-delta flat">&#8596; steady</span>`;
 
   // ---- SNAPSHOT ----
-  const noPriceDists = fd.filter(d=>distDetail.some(dd=>dd.noPrice && dd.dist.includes(d.name.split(',')[0].trim())));
   const snapMkt = currentState!=='all' ? stateNames[currentState] : 'all markets';
-  const snapCh = currentChannel!=='all' ? (currentChannel==='ON' ? ' (On-Premise)' : ' (Off-Premise)') : '';
-  let snap = `<div class="snap-label">Weekly Snapshot - ${snapMkt}${snapCh}</div>`;
-  snap += `<strong>13W volume is ${totalCE.toFixed(1)} CE</strong> across ${distCount} active distributors`;
-  snap += yoyPct>=0 ? `, <strong style="color:var(--green)">up ${yoyPct.toFixed(1)}%</strong> vs prior year.` : `, <strong style="color:var(--red)">down ${Math.abs(yoyPct).toFixed(1)}%</strong> vs prior year.`;
-  snap += ` 4W velocity is ${w4Total.toFixed(1)} CE (${velBadge.replace(/<[^>]+>/g,'').trim()}).`;
-  snap += ` <strong>${critCount}</strong> of ${fi.length} distributors have critical inventory levels.`;
-  snap += ` Net placements are <strong style="color:${netPl>=0?'var(--green)':'var(--red)'};">${netPl>=0?'+':''}${netPl}</strong>`;
-  const worstPl = [...fp].sort((a,b)=>a.net-b.net)[0];
-  if(worstPl && worstPl.net < -10) snap += `, concentrated in ${worstPl.name} (${worstPl.net})`;
-  snap += `. Of ${fa.length} tracked accounts, ${accel} are accelerating and ${decel} are decelerating.`;
+  let snap = `<div class="snap-label">Weekly Snapshot - ${snapMkt}</div>`;
+  snap += `<strong>${totalCE.toFixed(1)} CE depleted</strong> over 13 weeks across ${distCount} distributors`;
+  snap += yoyPct>=0 ? `, <strong style="color:var(--green)">up ${yoyPct.toFixed(1)}%</strong> YoY.` : `, <strong style="color:var(--red)">down ${Math.abs(yoyPct).toFixed(1)}%</strong> YoY.`;
+  if(typeof revTotal2026!=='undefined' && revTotal2026>0) snap += ` 2026 YTD revenue: <strong>${f$(revTotal2026)}</strong>.`;
+  snap += ` ${critCount} distributors with critical inventory.`;
   document.getElementById('overviewSnapshot').innerHTML = snap;
 
-  // ---- No-price note on overview ----
+  // ---- No-price note ----
   const npNote = document.getElementById('noPriceNote');
   const npDists = distDetail.filter(d=>d.noPrice);
   if(npDists.length) {
     npNote.style.display = 'block';
-    npNote.innerHTML = '&#9432; <strong>Note:</strong> ' + npDists.map(d=>d.dist).join(', ') + ' - pricing not reported. Revenue figures for these distributors show as $0 in depletion data. QuickBooks revenue (Revenue tab) is unaffected.';
+    npNote.innerHTML = '&#9432; <strong>Note:</strong> ' + npDists.map(d=>d.dist).join(', ') + ' - pricing not reported in depletion data. QuickBooks revenue is unaffected.';
   } else { npNote.style.display = 'none'; }
 
-  // ---- KPIs with deltas ----
+  // ---- KPIs ----
   document.getElementById('overviewKPIs').innerHTML = `
-    <div class="card"><h3>13W Depletion Volume</h3><div class="value">${totalCE.toFixed(1)} CE ${yoyBadge}</div><div class="sub">across ${distCount} active distributors (prior: ${priorCE.toFixed(1)} CE)</div></div>
-    <div class="card"><h3>13W Depletion Revenue</h3><div class="value">${f$(totalRev)}</div><div class="sub">Distributor sell-through</div></div>
-    <div class="card"><h3>4W Velocity</h3><div class="value">${w4Total.toFixed(1)} CE ${velBadge}</div><div class="sub">${(w4Total/4).toFixed(1)} CE/week avg</div></div>
-    <div class="card"><h3>Inventory on Hand</h3><div class="value">${ohTotal.toFixed(1)} CE</div><div class="sub">${avgDoh} avg DOH &middot; <span class="badge badge-yellow">${critCount} critical</span>${lowCount?' &middot; <span class="badge badge-green">'+lowCount+' low</span>':''}</div></div>`;
+    <div class="card"><h3>13W Depletions</h3><div class="value">${totalCE.toFixed(1)} CE ${yoyBadge}</div><div class="sub">${distCount} active distributors | ${(w4Total/4).toFixed(1)} CE/wk (4W avg)</div></div>
+    <div class="card"><h3>Distributor Inventory</h3><div class="value">${ohTotal.toFixed(1)} CE</div><div class="sub">${avgDoh} avg DOH | <span class="badge badge-yellow">${critCount} critical</span></div></div>
+    <div class="card"><h3>Net Placements (30D)</h3><div class="value" style="color:${netPl>=0?'var(--green)':'var(--red)'};">${netPl>=0?'+':''}${netPl}</div><div class="sub">${fp.filter(d=>d.net<0).length} of ${fp.length} distributors negative</div></div>
+    <div class="card"><h3>2026 YTD Revenue</h3><div class="value">${typeof revTotal2026!=='undefined'?f$(revTotal2026):'--'}</div><div class="sub">${typeof revTxns2026!=='undefined'?revTxns2026.toLocaleString()+' transactions':''}</div></div>`;
 
-  document.getElementById('overviewKPIs2').innerHTML = `
-    <div class="card"><h3>Net Placements (30D)</h3><div class="value" style="color:${netPl>=0?'var(--green)':'var(--red)'};">${netPl>=0?'+':''}${netPl}</div><div class="sub">+${newPl} new / ${lostPl} lost</div></div>
-    <div class="card"><h3>Total Revenue (All Channels)</h3><div class="value">${f$(revTotal)}</div><div class="sub">${revTxns.toLocaleString()} transactions &middot; ${revUnits.toLocaleString()} units</div></div>
-    <div class="card"><h3>Avg Order Value</h3><div class="value">${f$(revTotal/revTxns)}</div><div class="sub">Across all channels</div></div>
-    <div class="card"><h3>Active Distributors</h3><div class="value">${distCount}</div><div class="sub">${fd.length} total &middot; ${accel} accts accelerating, ${decel} decelerating</div></div>`;
+  // ---- CLASSIC SELLOUT TRACKER ----
+  const panel = document.getElementById('classicSelloutTracker');
+  if(typeof classicTracker!=='undefined' && classicTracker) {
+    const ct = classicTracker;
+    const pctSold = ct.history.length>=2 ? (((ct.history[0].total - ct.trackable) / ct.history[0].total) * 100) : 0;
+    const onTrack = ct.burnRate >= ct.requiredMonthly;
+    const projMonths = ct.burnRate > 0 ? (ct.trackable / ct.burnRate) : 999;
+    const projDate = new Date();
+    projDate.setDate(projDate.getDate() + projMonths * 30.44);
+    const projStr = projDate.toLocaleDateString('en-US', {month:'short',year:'numeric'});
+    const deadline = new Date(2026, 5, 30);
+    const deadlineStr = deadline.toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'});
+    const barPct = Math.min(100, Math.max(0, 100 - (ct.trackable / (ct.history.length?ct.history[0].total:ct.trackable) * 100)));
 
+    let html = `<h3 style="margin-bottom:12px;">Classic Inventory Sellout Tracker (Batch 1+2) - Deadline: ${deadlineStr}</h3>`;
+    html += `<div style="display:flex;gap:20px;flex-wrap:wrap;margin-bottom:16px;">`;
+    html += `<div class="kpi-mini"><div class="label">Remaining (Trackable)</div><div class="val" style="font-size:24px;">${ct.trackable.toLocaleString()} cases</div></div>`;
+    html += `<div class="kpi-mini"><div class="label">Burn Rate</div><div class="val" style="font-size:24px;">${ct.burnRate.toFixed(0)} cases/mo</div></div>`;
+    html += `<div class="kpi-mini"><div class="label">Required Rate</div><div class="val" style="font-size:24px;color:${onTrack?'var(--green)':'var(--red)'};">${ct.requiredMonthly.toFixed(0)} cases/mo</div></div>`;
+    html += `<div class="kpi-mini"><div class="label">Months to Deadline</div><div class="val" style="font-size:24px;">${ct.monthsRemaining.toFixed(1)}</div></div>`;
+    html += `<div class="kpi-mini"><div class="label">Projected Sellout</div><div class="val" style="font-size:24px;color:${projDate<=deadline?'var(--green)':'var(--red)'};">${projStr}</div></div>`;
+    html += `<div class="kpi-mini"><div class="label">Status</div><div class="val" style="font-size:20px;">${onTrack?'<span style="color:var(--green)">On Track</span>':'<span style="color:var(--red)">Behind Pace</span>'}</div></div>`;
+    html += `</div>`;
+
+    // Progress bar
+    html += `<div style="margin-bottom:14px;">`;
+    html += `<div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text-dim);margin-bottom:4px;"><span>Sold</span><span>${barPct.toFixed(1)}% complete</span><span>Remaining</span></div>`;
+    html += `<div style="background:#E5E7EB;border-radius:8px;height:24px;overflow:hidden;">`;
+    html += `<div style="background:linear-gradient(90deg,var(--green),#34D399);height:100%;width:${barPct}%;border-radius:8px;transition:width 0.5s;"></div>`;
+    html += `</div></div>`;
+
+    // Wine breakdown
+    const wines = [['Still White','sw'],['Still Rose','sr'],['Red','rd'],['Sparkling White','spw'],['Sparkling Rose','spr']];
+    html += `<div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px;">`;
+    wines.forEach(([name,key]) => {
+      const val = ct.byWine[key]||0;
+      if(val > 0) html += `<div style="background:var(--cream);padding:6px 14px;border-radius:8px;font-size:13px;"><strong>${name}:</strong> ${val.toFixed(1)} cases</div>`;
+    });
+    html += `</div>`;
+
+    // Excluded note
+    html += `<div style="font-size:11px;color:var(--text-dim);margin-top:4px;">Excludes ${ct.badSpr.toFixed(0)} cases of Sparkling Rose (bad inventory at Zephyr Batch 1, to be destroyed). Data as of ${ct.dataDate}.</div>`;
+    panel.innerHTML = html;
+    panel.style.display = 'block';
+  } else {
+    panel.style.display = 'none';
+  }
+
+  // ---- ALERTS ----
   const netNeg = fp.filter(d=>d.net<0).length;
-  const netPos = fp.filter(d=>d.net>0);
-  document.getElementById('overviewAlerts').innerHTML = `
-    <div class="alert-bar danger">&#9888; Net placements negative for ${netNeg} of ${fp.length} distributors${netPos.length?'. Positive: '+netPos.map(d=>d.name+' (+'+d.net+')').join(', '):''}</div>`;
+  let alertHtml = '';
+  if(netNeg > 0) alertHtml += `<div class="alert-bar danger">&#9888; Net placements negative for ${netNeg} of ${fp.length} distributors</div>`;
+  if(typeof classicTracker!=='undefined' && classicTracker && classicTracker.burnRate < classicTracker.requiredMonthly) {
+    alertHtml += `<div class="alert-bar danger">&#9888; Classic inventory burn rate (${classicTracker.burnRate.toFixed(0)}/mo) is below required pace (${classicTracker.requiredMonthly.toFixed(0)}/mo) for June 30 deadline</div>`;
+  }
+  document.getElementById('overviewAlerts').innerHTML = alertHtml;
 
+  // ---- CHARTS ----
   const weekLabels = ['W1','W2','W3','W4','W5','W6','W7','W8','W9','W10','W11','W12','W13'];
   const wkTotals = weekLabels.map((_,i) => fd.reduce((s,d) => s + (d.weekly?d.weekly[i]:0), 0));
   const gridColor = 'rgba(0,0,0,0.06)';
   makeChart('chartDepTrend',{type:'line',data:{labels:weekLabels,datasets:[{label:'Total CE',data:wkTotals,borderColor:'#2563EB',backgroundColor:'rgba(37,99,235,0.08)',fill:true,tension:0.3,borderWidth:2,pointRadius:3,pointBackgroundColor:'#2563EB'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,grid:{color:gridColor}},x:{grid:{display:false}}}}});
-
-  makeChart('chartRevTrend',{type:'bar',data:{labels:revMonthLabels,datasets:[{label:'Revenue',data:revTotalByMonth,backgroundColor:revTotalByMonth.map((_,i)=>i>=19?'rgba(37,99,235,0.85)':'rgba(37,99,235,0.35)'),borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,grid:{color:gridColor},ticks:{callback:v=>'$'+Math.round(v/1000)+'k'}},x:{grid:{display:false}}}}});
-
-  makeChart('chartChannel',{type:'doughnut',data:{labels:customerRevenue.map(c=>c.type),datasets:[{data:customerRevenue.map(c=>c.rev),backgroundColor:['#2563EB','#7C3AED','#0891B2','#059669'],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{padding:12,usePointStyle:true,color:'#2D2420'}}}}});
 
   const sorted = [...fd].filter(d=>d.ce>0).sort((a,b)=>b.ce-a.ce).slice(0,10);
   makeChart('chartDistBar',{type:'bar',data:{labels:sorted.map(d=>d.name.split(' - ')[0].replace('Republic Natl','Republic').substring(0,22)),datasets:[{label:'13W CE',data:sorted.map(d=>d.ce),backgroundColor:'rgba(37,99,235,0.65)',borderRadius:4}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{beginAtZero:true,grid:{color:gridColor}},y:{grid:{display:false}}}}});
@@ -1850,26 +1921,27 @@ function renderRevenue() {
   const ytdChColors = ytdChLabels.map(ch => channelColors[ch]||'#94A3B8');
   makeChart('chartCustChannel',{type:'doughnut',data:{labels:ytdChLabels,datasets:[{data:ytdChData,backgroundColor:ytdChColors,borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{padding:14,usePointStyle:true,color:'#2D2420'}},tooltip:{callbacks:{label:ctx=>ctx.label+': '+f$(ctx.raw)+' ('+((ctx.raw/ytdTotal)*100).toFixed(1)+'%)'}}}}});
 
-  // ===== Monthly revenue trend (all time) =====
-  makeChart('chartRevMonthly',{type:'bar',data:{labels:revMonthLabels,datasets:[{label:'Monthly Revenue',data:revTotalByMonth,backgroundColor:revTotalByMonth.map((_,i)=>i>=revTotalByMonth.length-ytdMonths.length?'rgba(37,99,235,0.85)':'rgba(37,99,235,0.35)'),borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,grid:{color:gridColor},ticks:{callback:v=>'$'+Math.round(v/1000)+'k'}},x:{grid:{display:false}}}}});
-
-  // SKU monthly trend line
+  // ===== 2026 SKU monthly trend line =====
   const skuColors = {'Still Red':'#2563EB','Still White':'#7C3AED','Still Rose':'#0891B2','Sparkling White':'#059669','Sparkling Rose':'#D97706'};
-  const skuDatasets = Object.keys(revTrend).map(sku => ({
-    label:sku,data:revTrend[sku],borderColor:skuColors[sku],backgroundColor:'transparent',
-    tension:0.3,borderWidth:2,pointRadius:2,pointBackgroundColor:skuColors[sku]
+  const use2026 = typeof revTrend2026 !== 'undefined' && Object.keys(revTrend2026).length > 0;
+  const trendData = use2026 ? revTrend2026 : revTrend;
+  const trendLabels = use2026 ? revMonthLabels2026 : revMonthLabels;
+  const skuDatasets = Object.keys(trendData).map(sku => ({
+    label:sku,data:trendData[sku],borderColor:skuColors[sku],backgroundColor:'transparent',
+    tension:0.3,borderWidth:2,pointRadius:3,pointBackgroundColor:skuColors[sku]
   }));
-  makeChart('chartSkuTrend',{type:'line',data:{labels:revMonthLabels,datasets:skuDatasets},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{usePointStyle:true,padding:10,color:'#2D2420'}}},scales:{y:{beginAtZero:true,grid:{color:gridColor},ticks:{callback:v=>'$'+Math.round(v/1000)+'k'}},x:{grid:{display:false}}}}});
+  makeChart('chartSkuTrend',{type:'line',data:{labels:trendLabels,datasets:skuDatasets},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{usePointStyle:true,padding:10,color:'#2D2420'}}},scales:{y:{beginAtZero:true,grid:{color:gridColor},ticks:{callback:v=>'$'+Math.round(v/1000)+'k'}},x:{grid:{display:false}}}}});
 
-  // Product mix horizontal bar
-  makeChart('chartProductMix',{type:'bar',data:{labels:productMix.map(p=>p.name),datasets:[{label:'Revenue',data:productMix.map(p=>p.rev),backgroundColor:['#2563EB','#7C3AED','#0891B2','#059669','#D97706'],borderRadius:4}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>f$(ctx.raw)+' ('+((ctx.raw/revTotal)*100).toFixed(1)+'%)'}}},scales:{x:{beginAtZero:true,grid:{color:gridColor},ticks:{callback:v=>'$'+Math.round(v/1000)+'k'}},y:{grid:{display:false}}}}});
+  // 2026 Product mix horizontal bar
+  const mixData = (typeof productMix2026 !== 'undefined' && productMix2026.length) ? productMix2026 : productMix;
+  const mixTotal = mixData.reduce((s,p)=>s+p.rev,0);
+  makeChart('chartProductMix',{type:'bar',data:{labels:mixData.map(p=>p.name),datasets:[{label:'Revenue',data:mixData.map(p=>p.rev),backgroundColor:['#2563EB','#7C3AED','#0891B2','#059669','#D97706'],borderRadius:4}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>f$(ctx.raw)+' ('+((ctx.raw/mixTotal)*100).toFixed(1)+'%)'}}},scales:{x:{beginAtZero:true,grid:{color:gridColor},ticks:{callback:v=>'$'+Math.round(v/1000)+'k'}},y:{grid:{display:false}}}}});
 
-  // SKU detail table
+  // 2026 SKU detail table
   const tbl = document.querySelector('#tblSkuDetail tbody');
   tbl.innerHTML = '';
-  const skuTotal = productMix.reduce((s,p)=>s+p.rev,0);
-  productMix.forEach(p => {
-    const pct = ((p.rev/skuTotal)*100).toFixed(1);
+  mixData.forEach(p => {
+    const pct = mixTotal > 0 ? ((p.rev/mixTotal)*100).toFixed(1) : '0.0';
     const cases = (p.units/12).toFixed(1);
     tbl.innerHTML += `<tr>
       <td style="font-weight:700">${p.name}</td>
@@ -2392,7 +2464,8 @@ function renderOverviewAnalysis() {
   if(worstPl && worstPl.net<-10) actions.push(`<strong>Address placement losses:</strong> ${worstPl.name} has net ${worstPl.net} placements. Prioritize understanding which accounts left and why.`);
   if(critInv.length>2) actions.push(`<strong>Inventory correction:</strong> Request stock adjustments with ${critInv.length} overstocked distributors before pushing new placements.`);
 
-  document.getElementById('overviewAnalysis').innerHTML = aiCard('Weekly Priority Summary', insights, actions);
+  const el = document.getElementById('overviewAnalysis');
+  if(el) el.innerHTML = aiCard('Weekly Priority Summary', insights, actions);
 }
 
 function renderRevenueAnalysis() {
